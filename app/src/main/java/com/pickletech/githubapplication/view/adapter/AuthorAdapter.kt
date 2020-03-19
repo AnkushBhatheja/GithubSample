@@ -67,9 +67,9 @@ class AuthorAdapter constructor(private val listener: ItemClickListener<Author>)
     class ItemHolder(val mBinding: ItemAuthorBinding) : RecyclerView.ViewHolder(mBinding.root) {
 
         fun bind(item: Author, listener: ItemClickListener<Author>) {
-            mBinding.root.setOnClickListener(View.OnClickListener {
+            mBinding.root.setOnClickListener {
                 listener.onItemClick(item)
-            })
+            }
         }
     }
 
