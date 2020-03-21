@@ -43,6 +43,7 @@ class AuthorListFragment : BaseFragment<FragmentAuthorListBinding, AuthorListVie
 
         mBinding.viewModel = viewModel
         mBinding.recycleView.layoutManager = LinearLayoutManager(context)
+
         val adapter =
             AuthorAdapter(object :
                 ItemClickListener<Author> {

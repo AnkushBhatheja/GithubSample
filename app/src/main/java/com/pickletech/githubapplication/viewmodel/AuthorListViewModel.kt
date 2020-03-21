@@ -1,6 +1,7 @@
 package com.pickletech.githubapplication.viewmodel
 
 import android.text.TextUtils
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.pickletech.githubapplication.GithubApplication
 import com.pickletech.githubapplication.R
@@ -78,7 +79,5 @@ class AuthorListViewModel
                     mShowMessage.postValue(e.message)
                 }
             })
-
-
     }
 }

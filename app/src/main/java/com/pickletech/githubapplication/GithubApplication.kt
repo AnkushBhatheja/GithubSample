@@ -6,12 +6,12 @@ import com.pickletech.githubapplication.di.DaggerApplicationComponent
 
 class GithubApplication : Application() {
 
-    lateinit var appComponent : ApplicationComponent
+    lateinit var appComponent: ApplicationComponent
 
     override fun onCreate() {
         super.onCreate()
 
-      appComponent =   DaggerApplicationComponent.builder()
+        appComponent = DaggerApplicationComponent.builder()
             .application(this)
             .build();
     }

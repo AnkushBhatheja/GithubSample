@@ -8,6 +8,7 @@ import com.pickletech.githubapplication.repo.GithubService
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @Module(includes = [NetworkModule::class])
 object ApplicationModule {
@@ -22,6 +23,7 @@ object ApplicationModule {
         return database.githubDao()
     }
 
+    @Singleton
     @Provides
     fun provideDatabase(application: GithubApplication): Database {
         return Room
