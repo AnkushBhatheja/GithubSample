@@ -1,14 +1,17 @@
 package com.pickletech.githubapplication.di
 
+import androidx.room.RoomDatabase
 import com.pickletech.githubapplication.view.fragment.AuthorListFragment
 import com.pickletech.githubapplication.GithubApplication
+import com.pickletech.githubapplication.database.Database
 import com.pickletech.githubapplication.view.fragment.AuthorDetailFragment
 import dagger.BindsInstance
 import dagger.Component
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ApplicationModule::class, GithubModule::class])
+@Component(modules = [ApplicationModule::class])
 interface ApplicationComponent {
 
     @Component.Builder
@@ -20,6 +23,9 @@ interface ApplicationComponent {
 
     }
 
-    fun inject(authorListFragment: AuthorListFragment)
-    fun inject(authorDetailFragment: AuthorDetailFragment)
+    fun application() : GithubApplication
+    fun provideRetrofit(): Retrofit
+    fun provideAppDatabase(): Database
+
+
 }

@@ -13,6 +13,7 @@ import com.pickletech.githubapplication.R
 import com.pickletech.githubapplication.databinding.FragmentAuthorListBinding
 import com.pickletech.githubapplication.model.Author
 import com.pickletech.githubapplication.view.ItemClickListener
+import com.pickletech.githubapplication.view.MainActivity
 import com.pickletech.githubapplication.view.adapter.AuthorAdapter
 import com.pickletech.githubapplication.view.baseview.BaseFragment
 import com.pickletech.githubapplication.viewmodel.AuthorListViewModel
@@ -30,7 +31,7 @@ class AuthorListFragment : BaseFragment<FragmentAuthorListBinding, AuthorListVie
     }
 
     override fun inject() {
-        (activity?.application as GithubApplication).appComponent
+        (activity as MainActivity).githubComponent
             .inject(this)
     }
 

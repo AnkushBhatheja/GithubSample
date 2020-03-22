@@ -13,16 +13,6 @@ import javax.inject.Singleton
 @Module(includes = [NetworkModule::class])
 object ApplicationModule {
 
-    @Provides
-    fun provideGithubService(retrofit: Retrofit): GithubService {
-        return retrofit.create(GithubService::class.java)
-    }
-
-    @Provides
-    fun provideGithubDao(database: Database): GithubDao {
-        return database.githubDao()
-    }
-
     @Singleton
     @Provides
     fun provideDatabase(application: GithubApplication): Database {

@@ -11,6 +11,7 @@ import com.pickletech.githubapplication.databinding.FragmentAuthorDetailsBinding
 import com.pickletech.githubapplication.databinding.FragmentAuthorListBinding
 import com.pickletech.githubapplication.model.Author
 import com.pickletech.githubapplication.view.ItemClickListener
+import com.pickletech.githubapplication.view.MainActivity
 import com.pickletech.githubapplication.view.adapter.AuthorAdapter
 import com.pickletech.githubapplication.view.baseview.BaseFragment
 import com.pickletech.githubapplication.viewmodel.AuthorDetailViewModel
@@ -30,7 +31,7 @@ class AuthorDetailFragment : BaseFragment<FragmentAuthorDetailsBinding, AuthorDe
     }
 
     override fun inject() {
-        (activity?.application as GithubApplication).appComponent
+        (activity as MainActivity).githubComponent
             .inject(this)
     }
 

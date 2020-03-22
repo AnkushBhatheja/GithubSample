@@ -33,7 +33,6 @@ abstract class BaseFragment<T : ViewDataBinding, VM : ViewModel> : AppCompatDial
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        inject()
     }
 
     override fun onCreateView(
@@ -50,9 +49,10 @@ abstract class BaseFragment<T : ViewDataBinding, VM : ViewModel> : AppCompatDial
         return mBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
+        inject()
         viewModel = createViewModel()
 
         (viewModel as BaseViewModel).mLoading
@@ -68,6 +68,12 @@ abstract class BaseFragment<T : ViewDataBinding, VM : ViewModel> : AppCompatDial
                 })
 
         initView(savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
     }
 
     private fun showMessage(message: String) {

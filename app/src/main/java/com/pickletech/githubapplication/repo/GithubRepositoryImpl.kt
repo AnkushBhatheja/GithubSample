@@ -1,6 +1,7 @@
 package com.pickletech.githubapplication.repo
 
 import com.pickletech.githubapplication.database.GithubDao
+import com.pickletech.githubapplication.di.PerActivity
 import com.pickletech.githubapplication.model.Author
 import com.pickletech.githubapplication.model.SearchResult
 import io.reactivex.Single
@@ -9,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@PerActivity
 class GithubRepositoryImpl @Inject constructor(
     private val githubService: GithubService,
     private val authorDao: GithubDao
