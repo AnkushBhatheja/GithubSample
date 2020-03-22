@@ -23,9 +23,6 @@ interface ApplicationComponent {
 
     }
 
-    fun application() : GithubApplication
-    fun provideRetrofit(): Retrofit
-    fun provideAppDatabase(): Database
-
+    fun getGithubComponentFactory(): GithubComponent.Factory
 
 }
