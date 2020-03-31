@@ -8,8 +8,13 @@ import com.pickletech.githubapplication.R
 import com.pickletech.githubapplication.model.Author
 import com.pickletech.githubapplication.model.SearchResult
 import com.pickletech.githubapplication.repo.GithubRepository
+import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AuthorListViewModel
@@ -18,45 +23,18 @@ class AuthorListViewModel
     var repository: GithubRepository
 ) : BaseViewModel(application) {
 
+    private val publishSubject: PublishSubject<String> = PublishSubject.create()
     val searchKey: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<String>("")
     }
 
     val authorData: MutableLiveData<Pair<String, List<Author>>> by lazy {
         MutableLiveData<Pair<String, List<Author>>>()
     }
 
-    fun fetchAuthors(key: String?) {
 
-        val query = (if (!TextUtils.isEmpty(key)) key else "alphabetagama")!!
-
-        if (query.contentEquals(authorData.value?.first ?: ""))
-            return
-
-
-        repository.fetchAuthor(query)
-            .subscribe(object : SingleObserver<MutableList<Author>> {
-                override fun onSuccess(t: MutableList<Author>) {
-                    mLoading.postValue(Pair(false, null))
-                    if (t.isEmpty())
-                        fetchAuthorsFromApi(query)
-                    else {
-                        t.add(Author(-1, "", "", ""))
-                        authorData.postValue(Pair(query, t))
-                    }
-                }
-
-                override fun onSubscribe(d: Disposable) {
-                    mLoading.postValue(Pair(true, application.getString(R.string.loading)))
-                }
-
-                override fun onError(e: Throwable) {
-                    mLoading.postValue(Pair(false, null))
-                    mShowMessage.postValue(e.message)
-                }
-
-            })
-
+    fun search(key: String) {
+        publishSubject.onNext(key)
     }
 
     fun fetchAuthorsFromApi(query: String) {
@@ -80,4 +58,47 @@ class AuthorListViewModel
                 }
             })
     }
+
+
+    fun fetchAuthors() {
+        addDisposable(publishSubject.debounce(400, TimeUnit.MILLISECONDS)
+            .distinctUntilChanged()
+            .map {
+                if (TextUtils.isEmpty(it))
+                    return@map "alphabetagama"
+                return@map it
+            }
+            .subscribeOn(Schedulers.io())
+            .subscribe {
+                repository.fetchAuthor(it)
+                    .subscribe(object : SingleObserver<MutableList<Author>> {
+                        override fun onSuccess(t: MutableList<Author>) {
+                            mLoading.postValue(Pair(false, null))
+                            if (t.isEmpty())
+                                fetchAuthorsFromApi(it)
+                            else {
+                                t.add(Author(-1, "", "", ""))
+                                authorData.postValue(Pair(it, t))
+                            }
+                        }
+
+                        override fun onSubscribe(d: Disposable) {
+                            mLoading.postValue(
+                                Pair(
+                                    true,
+                                    application.getString(R.string.loading)
+                                )
+                            )
+                        }
+
+                        override fun onError(e: Throwable) {
+                            mLoading.postValue(Pair(false, null))
+                            mShowMessage.postValue(e.message)
+                        }
+
+                    })
+            })
+
+    }
+
 }

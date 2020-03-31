@@ -2,6 +2,7 @@ package com.pickletech.githubapplication.repo
 
 import com.pickletech.githubapplication.model.Author
 import com.pickletech.githubapplication.model.SearchResult
+import io.reactivex.Observable
 import io.reactivex.Single
 
 interface GithubRepository {
