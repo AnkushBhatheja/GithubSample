@@ -71,28 +71,22 @@ class AuthorListFragment : BaseFragment<FragmentAuthorListBinding, AuthorListVie
             })
         mBinding.recycleView.adapter = adapter
 
+        viewModel.fetchAuthors()
+
 
         viewModel.authorData.observe(this, Observer {
             adapter.addAll(it.second)
         })
 
-
-//        val handler = Handler()
-//        val runnable = Runnable() {
-//            kotlin.run {
-//                viewModel.fetchAuthors(viewModel.searchKey.value)
-//            }
-//        }
-
         viewModel.searchKey.observe(this, Observer {
-            viewModel.fetchAuthors(viewModel.searchKey.value!!)
+            viewModel.search(viewModel.searchKey.value!!)
         })
 
 
         if (viewModel.authorData.value != null) {
             viewModel.authorData.value?.second?.let { adapter.addAll(it) }
         } else
-            viewModel.fetchAuthors(viewModel.searchKey.value!!)
+            viewModel.search(viewModel.searchKey.value!!)
 
     }
 

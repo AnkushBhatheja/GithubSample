@@ -25,28 +25,16 @@ class AuthorListViewModel
 
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
     val searchKey: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
+        MutableLiveData<String>("")
     }
 
     val authorData: MutableLiveData<Pair<String, List<Author>>> by lazy {
         MutableLiveData<Pair<String, List<Author>>>()
     }
 
-    init {
-        searchKey.value = ""
-        configureSearch()
-    }
 
-
-    fun fetchAuthors(key: String) {
-
-//        val query = (if (!TextUtils.isEmpty(key)) key else "alphabetagama")!!
-
-//        if (query.contentEquals(authorData.value?.first ?: ""))
-//            return
-
+    fun search(key: String) {
         publishSubject.onNext(key)
-
     }
 
     fun fetchAuthorsFromApi(query: String) {
@@ -72,8 +60,8 @@ class AuthorListViewModel
     }
 
 
-    private fun configureSearch() {
-        publishSubject.debounce(400, TimeUnit.MILLISECONDS)
+    fun fetchAuthors() {
+        addDisposable(publishSubject.debounce(400, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
             .map {
                 if (TextUtils.isEmpty(it))
@@ -109,7 +97,7 @@ class AuthorListViewModel
                         }
 
                     })
-            }
+            })
 
     }
 

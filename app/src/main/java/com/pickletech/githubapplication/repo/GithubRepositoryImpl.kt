@@ -19,8 +19,6 @@ class GithubRepositoryImpl @Inject constructor(
     private val authorDao: GithubDao
 ) : GithubRepository {
 
-    private val publishSubject: PublishSubject<String> = PublishSubject.create()
-
     override fun fetchAuthorFromApi(query: String): Single<SearchResult> {
         return githubService.fetchAuthor(query)
             .subscribeOn(Schedulers.io())
@@ -32,13 +30,13 @@ class GithubRepositoryImpl @Inject constructor(
         return Single.just(query)
             .subscribeOn(Schedulers.io())
             .map {
-                authorDao.fetchAuthors(it)
+                authorDao.fetchAuthors("%$it%")
             }
             .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun saveAuthors(authors: List<Author>) {
-        Thread() {
+        Thread {
             kotlin.run {
                 authorDao.insertAuthors(authors)
             }
