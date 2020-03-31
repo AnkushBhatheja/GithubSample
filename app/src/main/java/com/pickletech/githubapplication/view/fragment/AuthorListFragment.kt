@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.MenuItem
 import android.widget.LinearLayout
+import android.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +42,7 @@ class AuthorListFragment : BaseFragment<FragmentAuthorListBinding, AuthorListVie
 
     override fun initView(savedInstanceState: Bundle?) {
 
+
         mBinding.viewModel = viewModel
         mBinding.recycleView.layoutManager = LinearLayoutManager(context)
 
@@ -75,22 +77,22 @@ class AuthorListFragment : BaseFragment<FragmentAuthorListBinding, AuthorListVie
         })
 
 
-        val handler = Handler()
-        val runnable = Runnable() {
-            kotlin.run {
-                viewModel.fetchAuthors(viewModel.searchKey.value)
-            }
-        }
+//        val handler = Handler()
+//        val runnable = Runnable() {
+//            kotlin.run {
+//                viewModel.fetchAuthors(viewModel.searchKey.value)
+//            }
+//        }
 
         viewModel.searchKey.observe(this, Observer {
-            handler.removeCallbacks(runnable)
-            handler.postDelayed(runnable, 600)
+            viewModel.fetchAuthors(viewModel.searchKey.value!!)
         })
+
 
         if (viewModel.authorData.value != null) {
             viewModel.authorData.value?.second?.let { adapter.addAll(it) }
         } else
-            viewModel.fetchAuthors(viewModel.searchKey.value)
+            viewModel.fetchAuthors(viewModel.searchKey.value!!)
 
     }
 
