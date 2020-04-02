@@ -10,27 +10,8 @@ import dagger.Provides
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-@Module(includes = [NetworkModule::class])
+@Module(includes = [NetworkModule::class,DBModule::class])
 object ApplicationModule {
-
-    @Provides
-    fun provideGithubService(retrofit: Retrofit): GithubService {
-        return retrofit.create(GithubService::class.java)
-    }
-
-    @Provides
-    fun provideGithubDao(database: Database): GithubDao {
-        return database.githubDao()
-    }
-
-    @Singleton
-    @Provides
-    fun provideDatabase(application: GithubApplication): Database {
-        return Room
-            .databaseBuilder(application.applicationContext, Database::class.java, "database.db")
-            .fallbackToDestructiveMigration()
-            .build()
-    }
 
 
 }

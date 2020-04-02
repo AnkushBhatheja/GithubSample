@@ -53,9 +53,9 @@ class AuthorAdapter constructor(private val listener: ItemClickListener<Author>)
         }
     }
 
-    fun addAll(items: List<Author>) {
+    fun addAll(items: List<Author>?) {
         authors.clear()
-        authors.addAll(items)
+        authors.addAll(items ?: mutableListOf())
         notifyDataSetChanged()
     }
 

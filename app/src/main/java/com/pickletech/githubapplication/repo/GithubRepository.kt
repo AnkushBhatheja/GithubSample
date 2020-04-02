@@ -6,9 +6,9 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 interface GithubRepository {
-    fun fetchAuthorFromApi(query: String): Single<SearchResult>
+    fun fetchAuthorFromApi(query: String?): Single<SearchResult>
 
-    fun fetchAuthor(query: String): Single<MutableList<Author>>
+    fun fetchAuthor(query: String?): Single<MutableList<Author>>
 
     fun saveAuthors(authors: List<Author>)
 }

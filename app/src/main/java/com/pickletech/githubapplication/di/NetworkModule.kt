@@ -1,6 +1,7 @@
 package com.pickletech.githubapplication.di
 
 import com.google.gson.Gson
+import com.pickletech.githubapplication.repo.GithubService
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -38,4 +39,10 @@ object NetworkModule {
             .retryOnConnectionFailure(true)
             .build()
     }
+
+    @Provides
+    fun provideGithubService(retrofit: Retrofit): GithubService {
+        return retrofit.create(GithubService::class.java)
+    }
+
 }

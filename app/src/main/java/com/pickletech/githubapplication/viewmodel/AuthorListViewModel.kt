@@ -1,6 +1,8 @@
 package com.pickletech.githubapplication.viewmodel
 
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.pickletech.githubapplication.GithubApplication
@@ -11,6 +13,7 @@ import com.pickletech.githubapplication.repo.GithubRepository
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.SingleObserver
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -23,13 +26,14 @@ class AuthorListViewModel
     var repository: GithubRepository
 ) : BaseViewModel(application) {
 
-    private val publishSubject: PublishSubject<String> = PublishSubject.create()
-    val searchKey: MutableLiveData<String> by lazy {
-        MutableLiveData<String>("")
+    private val publishSubject: PublishSubject<String?> = PublishSubject.create<String?>()
+
+    val searchKey: MutableLiveData<String?> by lazy {
+        MutableLiveData<String?>("")
     }
 
-    val authorData: MutableLiveData<Pair<String, List<Author>>> by lazy {
-        MutableLiveData<Pair<String, List<Author>>>()
+    val authorData: MutableLiveData<List<Author>> by lazy {
+        MutableLiveData<List<Author>>()
     }
 
 
@@ -37,13 +41,12 @@ class AuthorListViewModel
         publishSubject.onNext(key)
     }
 
-    fun fetchAuthorsFromApi(query: String) {
-
+    fun fetchAuthorsFromApi(query: String?) {
         repository.fetchAuthorFromApi(query)
             .subscribe(object : SingleObserver<SearchResult> {
                 override fun onSuccess(t: SearchResult) {
                     mLoading.postValue(Pair(false, null))
-                    authorData.postValue(Pair(query, t.items))
+                    authorData.postValue(t.items)
 
                     repository.saveAuthors(t.items);
                 }
@@ -63,12 +66,7 @@ class AuthorListViewModel
     fun fetchAuthors() {
         addDisposable(publishSubject.debounce(400, TimeUnit.MILLISECONDS)
             .distinctUntilChanged()
-            .map {
-                if (TextUtils.isEmpty(it))
-                    return@map "alphabetagama"
-                return@map it
-            }
-            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 repository.fetchAuthor(it)
                     .subscribe(object : SingleObserver<MutableList<Author>> {
@@ -78,7 +76,7 @@ class AuthorListViewModel
                                 fetchAuthorsFromApi(it)
                             else {
                                 t.add(Author(-1, "", "", ""))
-                                authorData.postValue(Pair(it, t))
+                                authorData.postValue(t)
                             }
                         }
 

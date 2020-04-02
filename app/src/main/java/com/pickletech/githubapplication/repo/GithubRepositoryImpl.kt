@@ -1,5 +1,6 @@
 package com.pickletech.githubapplication.repo
 
+import android.text.TextUtils
 import com.pickletech.githubapplication.database.GithubDao
 import com.pickletech.githubapplication.model.Author
 import com.pickletech.githubapplication.model.SearchResult
@@ -19,19 +20,18 @@ class GithubRepositoryImpl @Inject constructor(
     private val authorDao: GithubDao
 ) : GithubRepository {
 
-    override fun fetchAuthorFromApi(query: String): Single<SearchResult> {
-        return githubService.fetchAuthor(query)
+    override fun fetchAuthorFromApi(query: String?): Single<SearchResult> {
+        return githubService.fetchAuthor(if (!TextUtils.isEmpty(query)) query!! else "alphabetagama")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun fetchAuthor(query: String): Single<MutableList<Author>> {
+    override fun fetchAuthor(query: String?): Single<MutableList<Author>> {
 
-        return Single.just(query)
-            .subscribeOn(Schedulers.io())
-            .map {
-                authorDao.fetchAuthors("%$it%")
+        return Single.fromCallable {
+                authorDao.fetchAuthors("%${if (!TextUtils.isEmpty(query)) query else "alphabetagama"}%")
             }
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
 

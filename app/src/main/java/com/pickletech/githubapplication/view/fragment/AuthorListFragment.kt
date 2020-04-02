@@ -64,9 +64,7 @@ class AuthorListFragment : BaseFragment<FragmentAuthorListBinding, AuthorListVie
                 }
 
                 override fun showMore() {
-                    viewModel.fetchAuthorsFromApi(
-                        viewModel.authorData.value?.first ?: "alphabetagama"
-                    )
+                    viewModel.fetchAuthorsFromApi(viewModel.searchKey.value)
                 }
             })
         mBinding.recycleView.adapter = adapter
@@ -75,16 +73,12 @@ class AuthorListFragment : BaseFragment<FragmentAuthorListBinding, AuthorListVie
 
 
         viewModel.authorData.observe(this, Observer {
-            adapter.addAll(it.second)
-        })
-
-        viewModel.searchKey.observe(this, Observer {
-            viewModel.search(viewModel.searchKey.value!!)
+            adapter.addAll(it)
         })
 
 
         if (viewModel.authorData.value != null) {
-            viewModel.authorData.value?.second?.let { adapter.addAll(it) }
+            adapter.addAll(viewModel.authorData.value)
         } else
             viewModel.search(viewModel.searchKey.value!!)
 
